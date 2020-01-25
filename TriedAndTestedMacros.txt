@@ -214,6 +214,7 @@ Sub ManipulateSheet()
     Call CalculateRMS_L21
     Call CalculateRMS_L23
     Call CalculateRMS_L31
+    Call DecideIdealRMS
     Call CalculateErrorPercentage
     Call DrawChart
 '
@@ -243,23 +244,120 @@ Sub TryScriptForOneLogFile()
     
 End Sub
 
+Sub DecideIdealRMS()
+
+    ' Select Tools->References from the Visual Basic menu.
+    ' Check box beside "Microsoft Scripting Runtime" in the list.
+    Dim dict As New Scripting.Dictionary
+    
+    ' Add to fruit to Dictionary
+    dict.Add key:="150", Item:=332
+    dict.Add key:="400", Item:=892
+    dict.Add key:="600", Item:=1340
+    
+    Dim key As Variant
+    For Each key In dict.Keys
+        If InStr(ActiveSheet.Name, key) <> 0 Then
+            Range("K2").Value = Hex(dict(key))
+        End If
+    Next key
+    
+    Set dict = Nothing
+    
+End Sub
+
+Sub WriteSheetName(filePath As String)
+'
+' Macro3 Macro
+'
+
+'
+    Range("Y1").Value = filePath
+    Range("Y2").Select
+    ActiveCell.FormulaR1C1 = _
+        "=RIGHT(R[-1]C,LEN(R[-1]C)-FIND(""@"",SUBSTITUTE(R[-1]C,""\"",""@"",LEN(R[-1]C)-LEN(SUBSTITUTE(R[-1]C,""\"",""""))),1))"
+    Range("Y3").Select
+    ActiveCell.FormulaR1C1 = "=LEFT(R[-1]C,LEN(R[-1]C)-4)"
+    ActiveSheet.Name = Range("Y3").Value
+    Range("Y1:Y3").Value = ""
+    
+End Sub
+Sub Summary()
+
+   Dim WS_Count As Integer
+   Dim I As Integer
+
+   ' Set WS_Count equal to the number of worksheets in the active
+   ' workbook.
+   WS_Count = ActiveWorkbook.Worksheets.Count
+    Sheets.Add
+    ActiveSheet.Name = "Summary"
+    Range("A1").Value = "TestLog"
+    Range("A1").Font.Bold = True
+    Range("B1").Value = "Error %"
+    Range("B1").Font.Bold = True
+    
+
+   ' Begin the loop.
+   For I = 1 To WS_Count
+
+      ' Insert your code here.
+      ' The following line shows how to reference a sheet within
+      ' the loop by displaying the worksheet name in a dialog box.
+      
+      Range("A" & (I + 1)).Value = ActiveWorkbook.Worksheets(I).Name
+      Range("B" & (I + 1)).Value = Round(ActiveWorkbook.Worksheets(I).Range("L2").Value, 2)
+      
+
+   Next I
+    ActiveSheet.UsedRange.Columns.AutoFit
+    
+    Rows(2).Delete
+End Sub
+
+Sub Sort()
+'
+' Sort Macro
+'
+
+'
+    Columns("B:B").Select
+    ActiveWorkbook.Worksheets("SummaryAgain").Sort.SortFields.Clear
+    ActiveWorkbook.Worksheets("SummaryAgain").Sort.SortFields.Add2 key:=Range( _
+        "B1"), SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:= _
+        xlSortNormal
+    With ActiveWorkbook.Worksheets("SummaryAgain").Sort
+        .SetRange Range("A2:B56")
+        .Header = xlNo
+        .MatchCase = False
+        .Orientation = xlTopToBottom
+        .SortMethod = xlPinYin
+        .Apply
+    End With
+End Sub
+
 Sub ReadEachLogFileAndPlotIt()
     Dim my_file As Integer
     Dim text_line As String
     Dim file_name As String
-    Dim i As Integer
+    Dim I As Integer
 
     file_name = "C:\Users\sesa552477\Desktop\ADC_DMA_Test\data\listfiles.txt"
 
     my_file = FreeFile()
     Open file_name For Input As my_file
 
-    i = 1
+    I = 1
 
     While Not EOF(my_file)
         Line Input #my_file, text_line
         Sheets.Add
         Call CopyTextFileToSheet(text_line)
+        Call WriteSheetName(text_line)
         Call ManipulateSheet
     Wend
+    Call Summary
+    Call Sort
 End Sub
+
+
