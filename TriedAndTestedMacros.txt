@@ -1,6 +1,6 @@
-Sub EditFile()
+Sub DeleteUselessData()
 '
-' EditFile Macro
+' DeleteUselessData Macro
 '
 
 '
@@ -13,9 +13,9 @@ Sub EditFile()
     Range("A1").Select
 End Sub
 
-Sub Column2()
+Sub PrepareColumnAL2()
 '
-' Column2 Macro
+' PrepareColumnAL2 Macro
 '
 
 '
@@ -27,9 +27,9 @@ Sub Column2()
 End Sub
 
 
-Sub Column3()
+Sub PrepareColumnAL3()
 '
-' Column2 Macro
+' PrepareColumnAL3 Macro
 '
 
 '
@@ -41,9 +41,9 @@ Sub Column3()
 End Sub
 
 
-Sub DeleteTail()
+Sub DeleteTailFromFirstColumn()
 '
-' DeleteTail Macro
+' DeleteTailFromFirstColumn Macro
 '
 
 '
@@ -51,9 +51,9 @@ Sub DeleteTail()
     Selection.Delete Shift:=xlUp
 End Sub
 
-Sub RowNames()
+Sub NameEachColumns()
 '
-' RowNames Macro
+' NameEachColumns Macro
 '
 
 '
@@ -87,9 +87,9 @@ Sub RowNames()
 End Sub
 
 
-Sub AN1_ZEN()
+Sub DivideAN1byZenerGain()
 '
-' AN1_ZEN Macro
+' DivideAN1byZenerGain Macro
 '
 
 '
@@ -100,9 +100,9 @@ Sub AN1_ZEN()
     Range("D2:D301").Select
 End Sub
 
-Sub L21_()
+Sub L21_Formula()
 '
-' L21_ Macro
+' L21_Formula Macro
 '
 
 '
@@ -113,9 +113,9 @@ Sub L21_()
     Range("E2:E301").Select
 End Sub
 
-Sub L31_()
+Sub L31_Formula()
 '
-' L21_ Macro
+' L31_Formula Macro
 '
 
 '
@@ -126,9 +126,9 @@ Sub L31_()
     Range("F2:F301").Select
 End Sub
 
-Sub L23_()
+Sub L23_Formula()
 '
-' L21_ Macro
+' L23_Formula Macro
 '
 
 '
@@ -139,9 +139,9 @@ Sub L23_()
     Range("G2:G301").Select
 End Sub
 
-Sub RMS_L21()
+Sub CalculateRMS_L21()
 '
-' RMS_L21 Macro
+' CalculateRMS_L21 Macro
 '
 
 '
@@ -151,9 +151,9 @@ Sub RMS_L21()
     Range("H3").Select
 End Sub
 
-Sub RMS_L23()
+Sub CalculateRMS_L23()
 '
-' RMS_L23 Macro
+' CalculateRMS_L23 Macro
 '
 
 '
@@ -163,9 +163,9 @@ Sub RMS_L23()
     Range("I3").Select
 End Sub
 
-Sub RMS_L31()
+Sub CalculateRMS_L31()
 '
-' RMS_L31 Macro
+' CalculateRMS_L31 Macro
 '
 
 '
@@ -175,9 +175,9 @@ Sub RMS_L31()
     Range("J3").Select
 End Sub
 
-Sub ERROR()
+Sub CalculateErrorPercentage()
 '
-' ERROR Macro
+' CalculateErrorPercentage Macro
 '
 
 '
@@ -187,9 +187,9 @@ Sub ERROR()
     Range("L3").Select
 End Sub
 
-Sub CHART()
+Sub DrawChart()
 '
-' CHART Macro
+' DrawChart Macro
 '
 
 '
@@ -198,28 +198,28 @@ Sub CHART()
     ActiveChart.SetSourceData Source:=Range("E1:G301")
 End Sub
 
-Sub GO()
+Sub ManipulateSheet()
 '
 ' CHART Macro
 '
-    Call EditFile
-    Call Column2
-    Call Column3
-    Call DeleteTail
-    Call RowNames
-    Call AN1_ZEN
-    Call L21_
-    Call L31_
-    Call L23_
-    Call RMS_L21
-    Call RMS_L23
-    Call RMS_L31
-    Call ERROR
-    Call CHART
+    Call DeleteUselessData
+    Call PrepareColumnAL2
+    Call PrepareColumnAL3
+    Call DeleteTailFromFirstColumn
+    Call NameEachColumns
+    Call DivideAN1byZenerGain
+    Call L21_Formula
+    Call L31_Formula
+    Call L23_Formula
+    Call CalculateRMS_L21
+    Call CalculateRMS_L23
+    Call CalculateRMS_L31
+    Call CalculateErrorPercentage
+    Call DrawChart
 '
 End Sub
 
-Sub CopyTextFile(fileName As String)
+Sub CopyTextFileToSheet(fileName As String)
     Dim oFso: Set oFso = CreateObject("Scripting.FileSystemObject")
     Dim oFile: Set oFile = oFso.OpenTextFile(fileName, 1)
     Dim sText
@@ -236,14 +236,14 @@ Sub CopyTextFile(fileName As String)
 End Sub
 
 
-Sub GoForIt()
+Sub TryScriptForOneLogFile()
     
-    Call CopyTextFile("C:\Users\sesa552477\Desktop\adcSamples.log")
-    Call GO
+    Call CopyTextFileToSheet("C:\Users\sesa552477\Desktop\adcSamples.log")
+    Call ManipulateSheet
     
 End Sub
 
-Sub ReadFileLineByLine()
+Sub ReadEachLogFileAndPlotIt()
     Dim my_file As Integer
     Dim text_line As String
     Dim file_name As String
@@ -259,7 +259,7 @@ Sub ReadFileLineByLine()
     While Not EOF(my_file)
         Line Input #my_file, text_line
         Sheets.Add
-        Call CopyTextFile(text_line)
-        Call GO
+        Call CopyTextFileToSheet(text_line)
+        Call ManipulateSheet
     Wend
 End Sub
