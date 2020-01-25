@@ -1,0 +1,265 @@
+Sub EditFile()
+'
+' EditFile Macro
+'
+
+'
+    Rows("1:2").Select
+    Selection.Delete Shift:=xlUp
+    Columns("A:A").Select
+    Selection.Delete Shift:=xlToLeft
+    Columns("B:C").Select
+    Selection.Delete Shift:=xlToLeft
+    Range("A1").Select
+End Sub
+
+Sub Column2()
+'
+' Column2 Macro
+'
+
+'
+    Range("A302:A601").Select
+    Selection.Copy
+    Range("B1").Select
+    ActiveSheet.Paste
+    Range("B1").Select
+End Sub
+
+
+Sub Column3()
+'
+' Column2 Macro
+'
+
+'
+    Range("A603:A902").Select
+    Selection.Copy
+    Range("C1").Select
+    ActiveSheet.Paste
+    Range("C1").Select
+End Sub
+
+
+Sub DeleteTail()
+'
+' DeleteTail Macro
+'
+
+'
+    Range("A301:A902").Select
+    Selection.Delete Shift:=xlUp
+End Sub
+
+Sub RowNames()
+'
+' RowNames Macro
+'
+
+'
+    Rows("1:1").Select
+    Selection.Insert Shift:=xlDown, CopyOrigin:=xlFormatFromLeftOrAbove
+    Selection.Font.Bold = True
+    Range("A1").Select
+    ActiveCell.FormulaR1C1 = "AN1"
+    Range("B1").Select
+    ActiveCell.FormulaR1C1 = "AL2"
+    Range("C1").Select
+    ActiveCell.FormulaR1C1 = "AL3"
+    Range("D1").Select
+    ActiveCell.FormulaR1C1 = "AN1_ZEN"
+    Range("E1").Select
+    ActiveCell.FormulaR1C1 = "L21"
+    Range("F1").Select
+    ActiveCell.FormulaR1C1 = "L31"
+    Range("G1").Select
+    ActiveCell.FormulaR1C1 = "L23"
+    Range("H1").Select
+    ActiveCell.FormulaR1C1 = "L21_RMS"
+    Range("I1").Select
+    ActiveCell.FormulaR1C1 = "L23_RMS"
+    Range("J1").Select
+    ActiveCell.FormulaR1C1 = "L31_RMS"
+    Range("K1").Select
+    ActiveCell.FormulaR1C1 = "RMS"
+    Range("L1").Select
+    ActiveCell.FormulaR1C1 = "ERROR"
+End Sub
+
+
+Sub AN1_ZEN()
+'
+' AN1_ZEN Macro
+'
+
+'
+    Range("D2").Select
+    ActiveCell.FormulaR1C1 = "=RC[-3]/33.6"
+    Range("D2").Select
+    Selection.AutoFill Destination:=Range("D2:D301")
+    Range("D2:D301").Select
+End Sub
+
+Sub L21_()
+'
+' L21_ Macro
+'
+
+'
+    Range("E2").Select
+    ActiveCell.FormulaR1C1 = "=RC[-3]-RC[-1]-2048"
+    Range("E2").Select
+    Selection.AutoFill Destination:=Range("E2:E301")
+    Range("E2:E301").Select
+End Sub
+
+Sub L31_()
+'
+' L21_ Macro
+'
+
+'
+    Range("F2").Select
+    ActiveCell.FormulaR1C1 = "=RC[-3]-RC[-2]-2048"
+    Range("F2").Select
+    Selection.AutoFill Destination:=Range("F2:F301")
+    Range("F2:F301").Select
+End Sub
+
+Sub L23_()
+'
+' L21_ Macro
+'
+
+'
+    Range("G2").Select
+    ActiveCell.FormulaR1C1 = "=RC[-2]-RC[-1]"
+    Range("G2").Select
+    Selection.AutoFill Destination:=Range("G2:G301")
+    Range("G2:G301").Select
+End Sub
+
+Sub RMS_L21()
+'
+' RMS_L21 Macro
+'
+
+'
+    Range("H2").Select
+    ActiveCell.FormulaR1C1 = _
+        "=DEC2HEX((INT(SQRT(SUMSQ(RC[-3]:R[299]C[-3])/COUNTA(R[-1]C[-3]:R[299]C[-3])))))"
+    Range("H3").Select
+End Sub
+
+Sub RMS_L23()
+'
+' RMS_L23 Macro
+'
+
+'
+    Range("I2").Select
+    ActiveCell.FormulaR1C1 = _
+        "=DEC2HEX((INT(SQRT(SUMSQ(RC[-2]:R[299]C[-2])/COUNTA(R[-1]C[-2]:R[299]C[-2])))))"
+    Range("I3").Select
+End Sub
+
+Sub RMS_L31()
+'
+' RMS_L31 Macro
+'
+
+'
+    Range("J2").Select
+    ActiveCell.FormulaR1C1 = _
+        "=DEC2HEX((INT(SQRT(SUMSQ(RC[-4]:R[299]C[-4])/COUNTA(R[-1]C[-4]:R[299]C[-4])))))"
+    Range("J3").Select
+End Sub
+
+Sub ERROR()
+'
+' ERROR Macro
+'
+
+'
+    Range("L2").Select
+    ActiveCell.FormulaR1C1 = _
+        "= (MAX(ABS(HEX2DEC(RC[-1])-HEX2DEC(RC[-4])), ABS(HEX2DEC(RC[-1])-HEX2DEC(RC[-3])), ABS(HEX2DEC(RC[-1])-HEX2DEC(RC[-2]))) / HEX2DEC(RC[-1])) * 100"
+    Range("L3").Select
+End Sub
+
+Sub CHART()
+'
+' CHART Macro
+'
+
+'
+    Columns("E:G").Select
+    ActiveSheet.Shapes.AddChart2(227, xlLineMarkers).Select
+    ActiveChart.SetSourceData Source:=Range("E1:G301")
+End Sub
+
+Sub GO()
+'
+' CHART Macro
+'
+    Call EditFile
+    Call Column2
+    Call Column3
+    Call DeleteTail
+    Call RowNames
+    Call AN1_ZEN
+    Call L21_
+    Call L31_
+    Call L23_
+    Call RMS_L21
+    Call RMS_L23
+    Call RMS_L31
+    Call ERROR
+    Call CHART
+'
+End Sub
+
+Sub CopyTextFile(fileName As String)
+    Dim oFso: Set oFso = CreateObject("Scripting.FileSystemObject")
+    Dim oFile: Set oFile = oFso.OpenTextFile(fileName, 1)
+    Dim sText
+    sText = oFile.ReadAll
+    Dim obj As New DataObject
+    Dim txt As String
+    
+    obj.SetText sText
+    
+    obj.PutInClipboard
+    
+    ActiveSheet.Paste
+    oFile.Close
+End Sub
+
+
+Sub GoForIt()
+    
+    Call CopyTextFile("C:\Users\sesa552477\Desktop\adcSamples.log")
+    Call GO
+    
+End Sub
+
+Sub ReadFileLineByLine()
+    Dim my_file As Integer
+    Dim text_line As String
+    Dim file_name As String
+    Dim i As Integer
+
+    file_name = "C:\Users\sesa552477\Desktop\ADC_DMA_Test\data\listfiles.txt"
+
+    my_file = FreeFile()
+    Open file_name For Input As my_file
+
+    i = 1
+
+    While Not EOF(my_file)
+        Line Input #my_file, text_line
+        Sheets.Add
+        Call CopyTextFile(text_line)
+        Call GO
+    Wend
+End Sub
