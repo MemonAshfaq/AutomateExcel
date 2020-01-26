@@ -433,7 +433,8 @@ Sub ReadEachLogFileAndPlotIt()
     Dim text_line As String
     Dim file_name As String
     Dim I As Integer
-
+    
+    'dir /s /b /a | findstr ".log" > listfiles.txt
     file_name = "C:\Users\sesa552477\Desktop\ADC_DMA_Test\data\listfiles.txt"
 
     my_file = FreeFile()
@@ -452,3 +453,4 @@ Sub ReadEachLogFileAndPlotIt()
     Call Border
     'Call Sort
 End Sub
+
