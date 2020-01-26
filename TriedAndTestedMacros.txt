@@ -1,4 +1,4 @@
-Sub DeleteUselessData()
+Private Sub DeleteUselessData()
 '
 ' DeleteUselessData Macro
 '
@@ -13,7 +13,7 @@ Sub DeleteUselessData()
     Range("A1").Select
 End Sub
 
-Sub PrepareColumnAL2()
+Private Sub PrepareColumnAL2()
 '
 ' PrepareColumnAL2 Macro
 '
@@ -27,7 +27,7 @@ Sub PrepareColumnAL2()
 End Sub
 
 
-Sub PrepareColumnAL3()
+Private Sub PrepareColumnAL3()
 '
 ' PrepareColumnAL3 Macro
 '
@@ -41,7 +41,7 @@ Sub PrepareColumnAL3()
 End Sub
 
 
-Sub DeleteTailFromFirstColumn()
+Private Sub DeleteTailFromFirstColumn()
 '
 ' DeleteTailFromFirstColumn Macro
 '
@@ -51,7 +51,7 @@ Sub DeleteTailFromFirstColumn()
     Selection.Delete Shift:=xlUp
 End Sub
 
-Sub NameEachColumns()
+Private Sub NameEachColumns()
 '
 ' NameEachColumns Macro
 '
@@ -87,7 +87,7 @@ Sub NameEachColumns()
 End Sub
 
 
-Sub DivideAN1byZenerGain()
+Private Sub DivideAN1byZenerGain()
 '
 ' DivideAN1byZenerGain Macro
 '
@@ -100,7 +100,7 @@ Sub DivideAN1byZenerGain()
     Range("D2:D301").Select
 End Sub
 
-Sub L21_Formula()
+Private Sub L21_Formula()
 '
 ' L21_Formula Macro
 '
@@ -113,7 +113,7 @@ Sub L21_Formula()
     Range("E2:E301").Select
 End Sub
 
-Sub L31_Formula()
+Private Sub L31_Formula()
 '
 ' L31_Formula Macro
 '
@@ -126,7 +126,7 @@ Sub L31_Formula()
     Range("F2:F301").Select
 End Sub
 
-Sub L23_Formula()
+Private Sub L23_Formula()
 '
 ' L23_Formula Macro
 '
@@ -139,7 +139,7 @@ Sub L23_Formula()
     Range("G2:G301").Select
 End Sub
 
-Sub CalculateRMS_L21()
+Private Sub CalculateRMS_L21()
 '
 ' CalculateRMS_L21 Macro
 '
@@ -151,7 +151,7 @@ Sub CalculateRMS_L21()
     Range("H3").Select
 End Sub
 
-Sub CalculateRMS_L23()
+Private Sub CalculateRMS_L23()
 '
 ' CalculateRMS_L23 Macro
 '
@@ -163,7 +163,7 @@ Sub CalculateRMS_L23()
     Range("I3").Select
 End Sub
 
-Sub CalculateRMS_L31()
+Private Sub CalculateRMS_L31()
 '
 ' CalculateRMS_L31 Macro
 '
@@ -175,7 +175,7 @@ Sub CalculateRMS_L31()
     Range("J3").Select
 End Sub
 
-Sub CalculateErrorPercentage()
+Private Sub CalculateErrorPercentage()
 '
 ' CalculateErrorPercentage Macro
 '
@@ -187,7 +187,7 @@ Sub CalculateErrorPercentage()
     Range("L3").Select
 End Sub
 
-Sub DrawChart()
+Private Sub DrawChart()
 '
 ' DrawChart Macro
 '
@@ -198,7 +198,7 @@ Sub DrawChart()
     ActiveChart.SetSourceData Source:=Range("E1:G301")
 End Sub
 
-Sub ManipulateSheet()
+Private Sub ManipulateSheet()
 '
 ' CHART Macro
 '
@@ -220,7 +220,7 @@ Sub ManipulateSheet()
 '
 End Sub
 
-Sub CopyTextFileToSheet(fileName As String)
+Private Sub CopyTextFileToSheet(fileName As String)
     Dim oFso: Set oFso = CreateObject("Scripting.FileSystemObject")
     Dim oFile: Set oFile = oFso.OpenTextFile(fileName, 1)
     Dim sText
@@ -237,14 +237,14 @@ Sub CopyTextFileToSheet(fileName As String)
 End Sub
 
 
-Sub TryScriptForOneLogFile()
+Private Sub TryScriptForOneLogFile()
     
     Call CopyTextFileToSheet("C:\Users\sesa552477\Desktop\adcSamples.log")
     Call ManipulateSheet
     
 End Sub
 
-Sub DecideIdealRMS()
+Private Sub DecideIdealRMS()
 
     ' Select Tools->References from the Visual Basic menu.
     ' Check box beside "Microsoft Scripting Runtime" in the list.
@@ -266,7 +266,7 @@ Sub DecideIdealRMS()
     
 End Sub
 
-Sub WriteSheetName(filePath As String)
+Private Sub WriteSheetName(filePath As String)
 '
 ' Macro3 Macro
 '
@@ -283,7 +283,7 @@ Sub WriteSheetName(filePath As String)
     
 End Sub
 
-Sub Border()
+Private Sub Border()
 '
 ' Border Macro
 '
@@ -371,7 +371,7 @@ Sub Border()
     End With
 End Sub
 
-Sub Summary()
+Private Sub Summary()
 
    Dim WS_Count As Integer
    Dim I As Integer
@@ -407,7 +407,7 @@ Sub Summary()
     Rows(2).Delete
 End Sub
 
-Sub Sort()
+Private Sub Sort()
 '
 ' Sort Macro
 '
