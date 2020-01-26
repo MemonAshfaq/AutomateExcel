@@ -282,6 +282,95 @@ Sub WriteSheetName(filePath As String)
     Range("Y1:Y3").Value = ""
     
 End Sub
+
+Sub Border()
+'
+' Border Macro
+'
+
+'
+    Range("A1:C" & [COUNTA(A:A)]).Select
+    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
+    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
+    With Selection.Borders(xlEdgeLeft)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeTop)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeBottom)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeRight)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlInsideVertical)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlInsideHorizontal)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    Range("A1:C1").Select
+    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
+    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
+    With Selection.Borders(xlEdgeLeft)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlMedium
+    End With
+    With Selection.Borders(xlEdgeTop)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlMedium
+    End With
+    With Selection.Borders(xlEdgeBottom)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlMedium
+    End With
+    With Selection.Borders(xlEdgeRight)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlMedium
+    End With
+    With Selection.Borders(xlInsideVertical)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    Selection.Borders(xlInsideHorizontal).LineStyle = xlNone
+    With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .ThemeColor = xlThemeColorAccent6
+        .TintAndShade = 0.399975585192419
+        .PatternTintAndShade = 0
+    End With
+End Sub
+
 Sub Summary()
 
    Dim WS_Count As Integer
@@ -296,6 +385,8 @@ Sub Summary()
     Range("A1").Font.Bold = True
     Range("B1").Value = "Error %"
     Range("B1").Font.Bold = True
+    Range("C1").Value = "Worksheet"
+    Range("C1").Font.Bold = True
     
 
    ' Begin the loop.
@@ -307,7 +398,8 @@ Sub Summary()
       
       Range("A" & (I + 1)).Value = ActiveWorkbook.Worksheets(I).Name
       Range("B" & (I + 1)).Value = Round(ActiveWorkbook.Worksheets(I).Range("L2").Value, 2)
-      
+      Range("C" & (I + 1)).Select
+      ActiveSheet.Hyperlinks.Add ActiveCell, "", ActiveWorkbook.Worksheets(I).Name & "!A1", TextToDisplay:=ActiveWorkbook.Worksheets(I).Name
 
    Next I
     ActiveSheet.UsedRange.Columns.AutoFit
@@ -322,12 +414,12 @@ Sub Sort()
 
 '
     Columns("B:B").Select
-    ActiveWorkbook.Worksheets("SummaryAgain").Sort.SortFields.Clear
-    ActiveWorkbook.Worksheets("SummaryAgain").Sort.SortFields.Add2 key:=Range( _
+    ActiveWorkbook.Worksheets("Summary").Sort.SortFields.Clear
+    ActiveWorkbook.Worksheets("Summary").Sort.SortFields.Add2 key:=Range( _
         "B1"), SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:= _
         xlSortNormal
-    With ActiveWorkbook.Worksheets("SummaryAgain").Sort
-        .SetRange Range("A2:B56")
+    With ActiveWorkbook.Worksheets("Summary").Sort
+        .SetRange Range("A2:B" & Rows.Count)
         .Header = xlNo
         .MatchCase = False
         .Orientation = xlTopToBottom
@@ -357,7 +449,6 @@ Sub ReadEachLogFileAndPlotIt()
         Call ManipulateSheet
     Wend
     Call Summary
-    Call Sort
+    Call Border
+    'Call Sort
 End Sub
-
-
