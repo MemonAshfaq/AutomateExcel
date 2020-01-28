@@ -255,6 +255,7 @@ Private Sub DecideIdealRMS()
     dict.Add key:="400", Item:=892
     dict.Add key:="600", Item:=1340
     
+    Range("K2").Value = Hex(dict("150"))
     Dim key As Variant
     For Each key In dict.Keys
         If InStr(ActiveSheet.Name, key) <> 0 Then
@@ -453,4 +454,3 @@ Sub ReadEachLogFileAndPlotIt()
     Call Border
     'Call Sort
 End Sub
-
