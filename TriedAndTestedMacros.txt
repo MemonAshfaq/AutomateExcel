@@ -1,3 +1,4 @@
+
 Private Sub DeleteUselessData()
 '
 ' DeleteUselessData Macro
@@ -279,7 +280,7 @@ Private Sub WriteSheetName(filePath As String)
         "=RIGHT(R[-1]C,LEN(R[-1]C)-FIND(""@"",SUBSTITUTE(R[-1]C,""\"",""@"",LEN(R[-1]C)-LEN(SUBSTITUTE(R[-1]C,""\"",""""))),1))"
     Range("Y3").Select
     ActiveCell.FormulaR1C1 = "=LEFT(R[-1]C,LEN(R[-1]C)-4)"
-    ActiveSheet.Name = Range("Y3").Value
+    ActiveSheet.Name = UCase(Range("Y3").Value)
     Range("Y1:Y3").Value = ""
     
 End Sub
@@ -290,7 +291,7 @@ Private Sub Border()
 '
 
 '
-    Range("A1:C" & [COUNTA(A:A)]).Select
+    Range("A1:G" & [COUNTA(A:A)]).Select
     Selection.Borders(xlDiagonalDown).LineStyle = xlNone
     Selection.Borders(xlDiagonalUp).LineStyle = xlNone
     With Selection.Borders(xlEdgeLeft)
@@ -329,7 +330,8 @@ Private Sub Border()
         .TintAndShade = 0
         .Weight = xlThin
     End With
-    Range("A1:C1").Select
+    Range("A1:G1").Select
+    Selection.Font.Size = 12
     Selection.Borders(xlDiagonalDown).LineStyle = xlNone
     Selection.Borders(xlDiagonalUp).LineStyle = xlNone
     With Selection.Borders(xlEdgeLeft)
@@ -370,6 +372,7 @@ Private Sub Border()
         .TintAndShade = 0.399975585192419
         .PatternTintAndShade = 0
     End With
+    ActiveSheet.UsedRange.Columns.AutoFit
 End Sub
 
 Private Sub Summary()
@@ -382,14 +385,21 @@ Private Sub Summary()
    WS_Count = ActiveWorkbook.Worksheets.Count
     Sheets.Add
     ActiveSheet.Name = "Summary"
-    Range("A1").Value = "TestLog"
+    Range("A1").Value = "SignalType"
     Range("A1").Font.Bold = True
-    Range("B1").Value = "Error %"
+    Range("B1").Value = "ADC_Clock"
     Range("B1").Font.Bold = True
-    Range("C1").Value = "Worksheet"
+    Range("C1").Value = "SupplyVoltage"
     Range("C1").Font.Bold = True
+    Range("D1").Value = "SupplyFrequency"
+    Range("D1").Font.Bold = True
+    Range("E1").Value = "TestLog"
+    Range("E1").Font.Bold = True
+    Range("F1").Value = "Error %"
+    Range("F1").Font.Bold = True
+    Range("G1").Value = "Worksheet"
+    Range("G1").Font.Bold = True
     
-
    ' Begin the loop.
    For I = 1 To WS_Count
 
@@ -397,12 +407,21 @@ Private Sub Summary()
       ' The following line shows how to reference a sheet within
       ' the loop by displaying the worksheet name in a dialog box.
       
-      Range("A" & (I + 1)).Value = ActiveWorkbook.Worksheets(I).Name
-      Range("B" & (I + 1)).Value = Round(ActiveWorkbook.Worksheets(I).Range("L2").Value, 2)
-      Range("C" & (I + 1)).Select
+      Range("E" & (I + 1)).Value = ActiveWorkbook.Worksheets(I).Name
+      Range("F" & (I + 1)).Value = Round(ActiveWorkbook.Worksheets(I).Range("L2").Value, 2)
+      Range("G" & (I + 1)).Select
       ActiveSheet.Hyperlinks.Add ActiveCell, "", ActiveWorkbook.Worksheets(I).Name & "!A1", TextToDisplay:=ActiveWorkbook.Worksheets(I).Name
 
    Next I
+    
+    Call ColumnSignalType
+    Call ColumnAdcClock
+    Call ColumnSupplyVoltage
+    Call ColumnSupplyFrequency
+    
+    
+    Columns("F:F").Select
+    Selection.Font.Bold = True
     ActiveSheet.UsedRange.Columns.AutoFit
     
     Rows(2).Delete
@@ -429,6 +448,109 @@ Private Sub Sort()
     End With
 End Sub
 
+Private Sub ColumnSignalType()
+
+    ' Select Tools->References from the Visual Basic menu.
+    ' Check box beside "Microsoft Scripting Runtime" in the list.
+    Dim dict As New Scripting.Dictionary
+    
+    ' Add to fruit to Dictionary
+    dict.Add key:="SQ", Item:="SQ"
+    dict.Add key:="SIN", Item:="SIN"
+    dict.Add key:="DST10", Item:="DST_10"
+    dict.Add key:="DST1", Item:="DST_1"
+    dict.Add key:="QUASI", Item:="QUASI"
+    
+    Dim key As Variant
+    Dim I As Integer
+    
+    For I = 1 To ActiveSheet.UsedRange.Rows.Count
+        For Each key In dict.Keys
+            If Range("A" & I).Value = "" And InStr(Range("E" & I).Value, key) <> 0 Then
+                Range("A" & I).Value = dict(key)
+            End If
+        Next key
+    Next I
+    Set dict = Nothing
+    
+End Sub
+
+Private Sub ColumnAdcClock()
+
+    ' Select Tools->References from the Visual Basic menu.
+    ' Check box beside "Microsoft Scripting Runtime" in the list.
+    Dim dict As New Scripting.Dictionary
+    
+    ' Add to fruit to Dictionary
+    dict.Add key:="1_5", Item:=1.5
+    dict.Add key:="39_5", Item:=39.5
+    dict.Add key:="160_5", Item:=160.5
+    
+    Dim key As Variant
+    Dim I As Integer
+    
+    For I = 1 To ActiveSheet.UsedRange.Rows.Count
+        For Each key In dict.Keys
+            If Range("B" & I).Value = "" And InStr(Range("E" & I).Value, key) <> 0 Then
+                Range("B" & I).Value = dict(key)
+            End If
+        Next key
+    Next I
+    Set dict = Nothing
+    
+End Sub
+Private Sub ColumnSupplyVoltage()
+
+    ' Select Tools->References from the Visual Basic menu.
+    ' Check box beside "Microsoft Scripting Runtime" in the list.
+    Dim dict As New Scripting.Dictionary
+    
+    ' Add to fruit to Dictionary
+    dict.Add key:="150", Item:=150
+    dict.Add key:="400", Item:=400
+    dict.Add key:="600", Item:=600
+    
+    Dim key As Variant
+    Dim I As Integer
+    
+    For I = 1 To ActiveSheet.UsedRange.Rows.Count
+        For Each key In dict.Keys
+            If Range("C" & I).Value = "" And InStr(Range("E" & I).Value, key) <> 0 Then
+                Range("C" & I).Value = dict(key)
+            End If
+        Next key
+    Next I
+    Set dict = Nothing
+    
+End Sub
+Private Sub ColumnSupplyFrequency()
+
+    ' Select Tools->References from the Visual Basic menu.
+    ' Check box beside "Microsoft Scripting Runtime" in the list.
+    Dim dict As New Scripting.Dictionary
+    
+    ' Add to fruit to Dictionary
+    dict.Add key:="45", Item:=45
+    dict.Add key:="55", Item:=55
+    dict.Add key:="65", Item:=65
+    
+    Dim key As Variant
+    Dim I As Integer
+    
+    For I = 1 To ActiveSheet.UsedRange.Rows.Count
+        For Each key In dict.Keys
+            If Range("D" & I).Value = "" And InStr(Range("E" & I).Value, key) <> 0 Then
+                Range("D" & I).Value = dict(key)
+            End If
+        Next key
+    Next I
+    Set dict = Nothing
+    
+End Sub
+
+Sub GoHome()
+    Sheets(1).Select
+End Sub
 Sub ReadEachLogFileAndPlotIt()
     Dim my_file As Integer
     Dim text_line As String
@@ -454,3 +576,4 @@ Sub ReadEachLogFileAndPlotIt()
     Call Border
     'Call Sort
 End Sub
+
