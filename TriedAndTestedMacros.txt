@@ -82,7 +82,7 @@ Private Sub NameEachColumns()
     Range("J1").Select
     ActiveCell.FormulaR1C1 = "L31_RMS"
     Range("K1").Select
-    ActiveCell.FormulaR1C1 = "RMS"
+    ActiveCell.FormulaR1C1 = "IdealRMS"
     Range("L1").Select
     ActiveCell.FormulaR1C1 = "ERROR"
 End Sub
@@ -291,7 +291,7 @@ Private Sub Border()
 '
 
 '
-    Range("A1:G" & [COUNTA(A:A)]).Select
+    Range("A1:H" & [COUNTA(A:A)]).Select
     Selection.Borders(xlDiagonalDown).LineStyle = xlNone
     Selection.Borders(xlDiagonalUp).LineStyle = xlNone
     With Selection.Borders(xlEdgeLeft)
@@ -330,7 +330,7 @@ Private Sub Border()
         .TintAndShade = 0
         .Weight = xlThin
     End With
-    Range("A1:G1").Select
+    Range("A1:H1").Select
     Selection.Font.Size = 12
     Selection.Borders(xlDiagonalDown).LineStyle = xlNone
     Selection.Borders(xlDiagonalUp).LineStyle = xlNone
@@ -385,46 +385,55 @@ Private Sub Summary()
    WS_Count = ActiveWorkbook.Worksheets.Count
     Sheets.Add
     ActiveSheet.Name = "Summary"
-    Range("A1").Value = "SignalType"
+    Range("A1").Value = "SamplingTime(us)"
     Range("A1").Font.Bold = True
-    Range("B1").Value = "ADC_Clock"
+    Range("B1").Value = "SignalType"
     Range("B1").Font.Bold = True
-    Range("C1").Value = "SupplyVoltage"
+    Range("C1").Value = "ADC_Clock"
     Range("C1").Font.Bold = True
-    Range("D1").Value = "SupplyFrequency"
+    Range("D1").Value = "SupplyVoltage"
     Range("D1").Font.Bold = True
-    Range("E1").Value = "TestLog"
+    Range("E1").Value = "SupplyFrequency"
     Range("E1").Font.Bold = True
-    Range("F1").Value = "Error %"
+    Range("F1").Value = "TestLog"
     Range("F1").Font.Bold = True
-    Range("G1").Value = "Worksheet"
+    Range("G1").Value = "Error %"
     Range("G1").Font.Bold = True
+    Range("H1").Value = "Worksheet"
+    Range("H1").Font.Bold = True
     
+    Dim J As Integer
+    J = 1
    ' Begin the loop.
-   For I = 1 To WS_Count
+   For I = WS_Count To 1 Step -1
+
 
       ' Insert your code here.
       ' The following line shows how to reference a sheet within
       ' the loop by displaying the worksheet name in a dialog box.
       
-      Range("E" & (I + 1)).Value = ActiveWorkbook.Worksheets(I).Name
-      Range("F" & (I + 1)).Value = Round(ActiveWorkbook.Worksheets(I).Range("L2").Value, 2)
-      Range("G" & (I + 1)).Select
+      Range("F" & (J + 1)).Value = ActiveWorkbook.Worksheets(I).Name
+      Range("G" & (J + 1)).Value = Round(ActiveWorkbook.Worksheets(I).Range("L2").Value, 2)
+      Range("H" & (J + 1)).Select
       ActiveSheet.Hyperlinks.Add ActiveCell, "", ActiveWorkbook.Worksheets(I).Name & "!A1", TextToDisplay:=ActiveWorkbook.Worksheets(I).Name
 
+    J = J + 1
+    
    Next I
     
+    Call ColumnSamplingInterval
     Call ColumnSignalType
     Call ColumnAdcClock
     Call ColumnSupplyVoltage
     Call ColumnSupplyFrequency
+    'Call RightAlign
     
     
-    Columns("F:F").Select
+    Columns("G:G").Select
     Selection.Font.Bold = True
     ActiveSheet.UsedRange.Columns.AutoFit
     
-    Rows(2).Delete
+    Rows([COUNTA(F:F)]).Delete
 End Sub
 
 Private Sub Sort()
@@ -447,6 +456,29 @@ Private Sub Sort()
         .Apply
     End With
 End Sub
+Private Sub ColumnSamplingInterval()
+
+    ' Select Tools->References from the Visual Basic menu.
+    ' Check box beside "Microsoft Scripting Runtime" in the list.
+    Dim dict As New Scripting.Dictionary
+    
+    ' Add to fruit to Dictionary
+    dict.Add key:="192", Item:="192"
+    dict.Add key:="200", Item:="200"
+    
+    Dim key As Variant
+    Dim I As Integer
+    
+    For I = 1 To ActiveSheet.UsedRange.Rows.Count
+        For Each key In dict.Keys
+            If Range("A" & I).Value = "" And InStr(Range("F" & I).Value, key) <> 0 Then
+                Range("A" & I).Value = dict(key)
+            End If
+        Next key
+    Next I
+    Set dict = Nothing
+    
+End Sub
 
 Private Sub ColumnSignalType()
 
@@ -466,8 +498,8 @@ Private Sub ColumnSignalType()
     
     For I = 1 To ActiveSheet.UsedRange.Rows.Count
         For Each key In dict.Keys
-            If Range("A" & I).Value = "" And InStr(Range("E" & I).Value, key) <> 0 Then
-                Range("A" & I).Value = dict(key)
+            If Range("B" & I).Value = "" And InStr(Range("F" & I).Value, key) <> 0 Then
+                Range("B" & I).Value = dict(key)
             End If
         Next key
     Next I
@@ -491,8 +523,8 @@ Private Sub ColumnAdcClock()
     
     For I = 1 To ActiveSheet.UsedRange.Rows.Count
         For Each key In dict.Keys
-            If Range("B" & I).Value = "" And InStr(Range("E" & I).Value, key) <> 0 Then
-                Range("B" & I).Value = dict(key)
+            If Range("C" & I).Value = "" And InStr(Range("F" & I).Value, key) <> 0 Then
+                Range("C" & I).Value = dict(key)
             End If
         Next key
     Next I
@@ -515,8 +547,8 @@ Private Sub ColumnSupplyVoltage()
     
     For I = 1 To ActiveSheet.UsedRange.Rows.Count
         For Each key In dict.Keys
-            If Range("C" & I).Value = "" And InStr(Range("E" & I).Value, key) <> 0 Then
-                Range("C" & I).Value = dict(key)
+            If Range("D" & I).Value = "" And InStr(Range("F" & I).Value, key) <> 0 Then
+                Range("D" & I).Value = dict(key)
             End If
         Next key
     Next I
@@ -539,13 +571,33 @@ Private Sub ColumnSupplyFrequency()
     
     For I = 1 To ActiveSheet.UsedRange.Rows.Count
         For Each key In dict.Keys
-            If Range("D" & I).Value = "" And InStr(Range("E" & I).Value, key) <> 0 Then
-                Range("D" & I).Value = dict(key)
+            If Range("E" & I).Value = "" And InStr(Range("F" & I).Value, key) <> 0 Then
+                Range("E" & I).Value = dict(key)
             End If
         Next key
     Next I
     Set dict = Nothing
     
+End Sub
+
+Private Sub RightAlign()
+'
+' Align Macro
+'
+
+'
+    Range("A2:H" & [COUNTA(A:A)]).Select
+    With Selection
+        .HorizontalAlignment = xlRight
+        .VerticalAlignment = xlBottom
+        .WrapText = False
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
 End Sub
 
 Sub GoHome()
